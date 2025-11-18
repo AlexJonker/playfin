@@ -9,8 +9,8 @@ import json
 import threading
 from .config import *
 
-JELLYFIN_URL = "https://movies.meekcraft.net"
-
+config = get_credentials()
+JELLYFIN_URL = config["JELLYFIN_URL"]
 
 
 def play_item(item_id, item_name, token, headers, user_id):

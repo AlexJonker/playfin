@@ -2,8 +2,26 @@ import curses
 import os
 from .constants import CONFIG_FILE
 from .cache import get_cached_show_status, get_cached_season_status
+import json
+from .encryption import decrypt_password
 
-JELLYFIN_URL = "https://movies.meekcraft.net"
+def load_config(): # duplicate since im not in the mood to fix it properly. This project is fucked anyway.
+    if not os.path.exists(CONFIG_FILE):
+        return None
+
+    try:
+        with open(CONFIG_FILE, "r") as f:
+            config = json.load(f)
+
+        # Decrypt password
+        key = config["ENCRYPTION_KEY"]
+        config["JELLYFIN_PASSWORD"] = decrypt_password(config["JELLYFIN_PASSWORD"], key)
+        return config
+    except Exception as e:
+        return None
+
+config = load_config()
+JELLYFIN_URL = config["JELLYFIN_URL"]
 
 
 def init_curses():
